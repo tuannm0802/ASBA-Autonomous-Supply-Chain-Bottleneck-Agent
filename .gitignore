@@ -1,0 +1,22 @@
+# Environment files
+.env
+backend/.env
+
+# Python virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# Node dependencies
+node_modules/
+frontend/node_modules/
+
+# Frontend builds
+frontend/dist/
+
+# Logs
+*.log
+task-*.log
+
+# SQLite Databases (optional, but usually ignored in production)
+# data/supply_chain.db

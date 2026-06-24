@@ -1,0 +1,225 @@
+{
+  "status": "partial_success",
+  "date": "2026-06-19",
+  "error_parsing_agent": "Agent did not return a response text",
+  "data_integrity": {
+    "total_rows": 2000,
+    "missing_values": 0,
+    "class_distribution_before": {
+      "On-Time": 1850,
+      "Late": 150
+    },
+    "class_distribution_after": {
+      "On-Time": 1850,
+      "Late": 1850
+    }
+  },
+  "metrics": {
+    "algorithm": "XGBoost (XGBClassifier)",
+    "accuracy": 0.912,
+    "f1_score": 0.905,
+    "auc_roc": 0.9958,
+    "training_samples": 2960,
+    "test_samples": 740,
+    "balancing_method": "CTGAN"
+  },
+  "charts": {
+    "risk_distribution": [
+      {
+        "name": "Low Risk",
+        "value": 43
+      },
+      {
+        "name": "Medium Risk",
+        "value": 2
+      },
+      {
+        "name": "High Risk",
+        "value": 5
+      }
+    ],
+    "bottleneck_by_forwarder": [
+      {
+        "forwarder": "DHL",
+        "high_risk_count": 0,
+        "avg_risk": 0
+      },
+      {
+        "forwarder": "ONE",
+        "high_risk_count": 0,
+        "avg_risk": 0
+      },
+      {
+        "forwarder": "Wanhai",
+        "high_risk_count": 3,
+        "avg_risk": 0.94
+      },
+      {
+        "forwarder": "Gemadept",
+        "high_risk_count": 2,
+        "avg_risk": 0.88
+      }
+    ],
+    "bottleneck_by_material": [
+      {
+        "material": "Internal_Mill",
+        "correlation": 0.4486
+      },
+      {
+        "material": "Shipping_Cost_USD",
+        "correlation": 0.1931
+      },
+      {
+        "material": "Outsource_Mill",
+        "correlation": 0.1666
+      },
+      {
+        "material": "Fwd_Wanhai",
+        "correlation": 0.058
+      },
+      {
+        "material": "Fwd_Gemadept",
+        "correlation": 0.0215
+      }
+    ]
+  },
+  "predictions_summary": {
+    "total_current_orders": 50,
+    "high_risk_count": 8,
+    "risk_level_breakdown": {
+      "CRITICAL": 4,
+      "HIGH": 0,
+      "MEDIUM": 2,
+      "LOW": 44
+    },
+    "average_risk_probability": 0.1248
+  },
+  "top_risk_features": {
+    "Internal_Mill": 0.4486,
+    "Shipping_Cost_USD": 0.1931,
+    "Outsource_Mill": 0.1666,
+    "Fwd_Wanhai": 0.058,
+    "Fwd_Gemadept": 0.0215
+  },
+  "high_risk_orders": [
+    {
+      "Order_ID": "ORD-20260619-C0039",
+      "Supplier_ID": "SUP-008",
+      "Risk_Probability": 0.0364,
+      "Risk_Level": "LOW",
+      "Order_Priority": "Low",
+      "Fabric_Body": 962,
+      "Fabric_Trim": 730,
+      "Fabric_Rib": 403,
+      "Fabric_CollarCuff": 528,
+      "Sewing_Trims": 874,
+      "Packing_Trims": 296,
+      "Interlining": 1022,
+      "Threads": 2245,
+      "Color_Sets_Count": 8,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Internal",
+      "Unit_Count": 3987,
+      "Order_Value_USD": 35883,
+      "Delay_Penalty_USD_Per_Day": 358.83,
+      "Shipping_Cost_USD": 1500,
+      "remediation_advice": "\u2714\ufe0f RISK MITIGATED: Switched fabric sourcing to Internal Mill. Delivery risk successfully lowered to 3.6% (LOW).",
+      "mitigated": true,
+      "mitigation_action": "Switched fabric sourcing to Internal Mill"
+    },
+    {
+      "Order_ID": "ORD-20260619-C0037",
+      "Supplier_ID": "SUP-003",
+      "Risk_Probability": 0.9656,
+      "Risk_Level": "CRITICAL",
+      "Order_Priority": "Medium",
+      "Fabric_Body": 2208,
+      "Fabric_Trim": 900,
+      "Fabric_Rib": 652,
+      "Fabric_CollarCuff": 702,
+      "Sewing_Trims": 2029,
+      "Packing_Trims": 2773,
+      "Interlining": 750,
+      "Threads": 1393,
+      "Color_Sets_Count": 10,
+      "Forwarder": "Wanhai",
+      "Mill_Source": "Outsource",
+      "Unit_Count": 7486,
+      "Order_Value_USD": 82346,
+      "Delay_Penalty_USD_Per_Day": 823.46,
+      "Shipping_Cost_USD": 2800,
+      "remediation_advice": "\u26a0\ufe0f CRITICAL ACTION REQUIRED: Upgrade carrier from Wanhai to DHL Express to avoid port delays (+4 days shipping buffer). OR Switch material fabrication to our Internal Mill to gain direct scheduling priority and reduce lead time by 5 days."
+    },
+    {
+      "Order_ID": "ORD-20260619-C0047",
+      "Supplier_ID": "SUP-006",
+      "Risk_Probability": 0.9381,
+      "Risk_Level": "CRITICAL",
+      "Order_Priority": "High",
+      "Fabric_Body": 1480,
+      "Fabric_Trim": 799,
+      "Fabric_Rib": 69,
+      "Fabric_CollarCuff": 432,
+      "Sewing_Trims": 1600,
+      "Packing_Trims": 1875,
+      "Interlining": 1060,
+      "Threads": 4711,
+      "Color_Sets_Count": 10,
+      "Forwarder": "Wanhai",
+      "Mill_Source": "Outsource",
+      "Unit_Count": 5405,
+      "Order_Value_USD": 32430,
+      "Delay_Penalty_USD_Per_Day": 324.3,
+      "Shipping_Cost_USD": 2800,
+      "remediation_advice": "\u26a0\ufe0f CRITICAL ACTION REQUIRED: Upgrade carrier from Wanhai to DHL Express to avoid port delays (+4 days shipping buffer). OR Switch material fabrication to our Internal Mill to gain direct scheduling priority and reduce lead time by 5 days."
+    },
+    {
+      "Order_ID": "ORD-20260619-C0022",
+      "Supplier_ID": "SUP-010",
+      "Risk_Probability": 0.9313,
+      "Risk_Level": "CRITICAL",
+      "Order_Priority": "High",
+      "Fabric_Body": 2736,
+      "Fabric_Trim": 289,
+      "Fabric_Rib": 450,
+      "Fabric_CollarCuff": 733,
+      "Sewing_Trims": 1021,
+      "Packing_Trims": 267,
+      "Interlining": 164,
+      "Threads": 1748,
+      "Color_Sets_Count": 8,
+      "Forwarder": "Wanhai",
+      "Mill_Source": "Outsource",
+      "Unit_Count": 9561,
+      "Order_Value_USD": 133854,
+      "Delay_Penalty_USD_Per_Day": 1338.54,
+      "Shipping_Cost_USD": 2800,
+      "remediation_advice": "\u26a0\ufe0f CRITICAL ACTION REQUIRED: Upgrade carrier from Wanhai to DHL Express to avoid port delays (+4 days shipping buffer). OR Switch material fabrication to our Internal Mill to gain direct scheduling priority and reduce lead time by 5 days."
+    },
+    {
+      "Order_ID": "ORD-20260619-C0033",
+      "Supplier_ID": "SUP-013",
+      "Risk_Probability": 0.7652,
+      "Risk_Level": "HIGH",
+      "Order_Priority": "Medium",
+      "Fabric_Body": 2934,
+      "Fabric_Trim": 340,
+      "Fabric_Rib": 211,
+      "Fabric_CollarCuff": 349,
+      "Sewing_Trims": 498,
+      "Packing_Trims": 2850,
+      "Interlining": 1458,
+      "Threads": 2708,
+      "Color_Sets_Count": 9,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Both",
+      "Unit_Count": 2856,
+      "Order_Value_USD": 17136,
+      "Delay_Penalty_USD_Per_Day": 171.36,
+      "Shipping_Cost_USD": 1500,
+      "remediation_advice": "\u26a0\ufe0f CRITICAL ACTION REQUIRED: Upgrade carrier from Gemadept to DHL Express to avoid port delays (+4 days shipping buffer)."
+    }
+  ],
+  "reasoning_log": "Pipeline executed local ML fallback. Balancing choice: SMOTE. Model trained successfully. Gemini reasoning skipped due to API Key Quota Exhaustion. Local rule-based sourcing advice generated: Agent did not return a response text",
+  "raw_agent_output": ""
+}

@@ -1,0 +1,191 @@
+{
+  "date": "2026-06-25",
+  "data_integrity": {
+    "total_rows": 10000,
+    "missing_values": 0,
+    "class_distribution_before": {
+      "On-Time": 9250,
+      "Late": 750
+    },
+    "class_distribution_after": {
+      "On-Time": 9250,
+      "Late": 9250
+    }
+  },
+  "metrics": {
+    "algorithm": "XGBoost (XGBClassifier)",
+    "accuracy": 0.9605,
+    "f1_score": 0.7304,
+    "auc_roc": 0.9831,
+    "training_samples": 8000,
+    "test_samples": 2000
+  },
+  "charts": {
+    "risk_distribution": [
+      {
+        "name": "Low Risk",
+        "value": 44
+      },
+      {
+        "name": "Medium Risk",
+        "value": 2
+      },
+      {
+        "name": "High Risk",
+        "value": 4
+      }
+    ],
+    "bottleneck_by_forwarder": [
+      {
+        "forwarder": "DHL",
+        "high_risk_count": 0,
+        "avg_risk": 0
+      },
+      {
+        "forwarder": "ONE",
+        "high_risk_count": 0,
+        "avg_risk": 0
+      },
+      {
+        "forwarder": "Wanhai",
+        "high_risk_count": 0,
+        "avg_risk": 0
+      },
+      {
+        "forwarder": "Gemadept",
+        "high_risk_count": 4,
+        "avg_risk": 0.9
+      }
+    ],
+    "bottleneck_by_material": [
+      {
+        "material": "Outsource_Mill",
+        "correlation": 0.3969
+      },
+      {
+        "material": "Shipping_Cost_USD",
+        "correlation": 0.3484
+      },
+      {
+        "material": "Color_Sets_Count",
+        "correlation": 0.0633
+      },
+      {
+        "material": "Fabric Body",
+        "correlation": 0.0297
+      },
+      {
+        "material": "Threads",
+        "correlation": 0.0259
+      }
+    ]
+  },
+  "predictions_summary": {
+    "total_current_orders": 50,
+    "high_risk_count": 3,
+    "risk_level_breakdown": {
+      "CRITICAL": 2,
+      "HIGH": 1,
+      "MEDIUM": 2,
+      "LOW": 45
+    },
+    "average_risk_probability": 0.1057
+  },
+  "high_risk_orders": [
+    {
+      "Order_ID": "ORD-20260625-C0012",
+      "Supplier_ID": "SUP-002",
+      "Risk_Probability": 0.9638,
+      "Risk_Level": "CRITICAL",
+      "Order_Priority": "High",
+      "Fabric_Body": 1645,
+      "Fabric_Trim": 574,
+      "Fabric_Rib": 579,
+      "Fabric_CollarCuff": 441,
+      "Sewing_Trims": 1718,
+      "Packing_Trims": 1980,
+      "Interlining": 536,
+      "Threads": 746,
+      "Color_Sets_Count": 8,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Outsource",
+      "Unit_Count": 7035,
+      "Order_Value_USD": 105525,
+      "Delay_Penalty_USD_Per_Day": 1055.25,
+      "Shipping_Cost_USD": 1500,
+      "remediation_advice": "\u26a0\ufe0f RECOMMENDED MITIGATION: Upgrade logistics carrier from Gemadept to DHL Express (+4 days buffer). OR Shift fabric fabrication to our Internal Mill to gain direct scheduling priority. OR Source shortage of Sewing_Trims from B2B partner 'Prestige Button & Trim' (Lead: 4d, Delay: 0.3%)."
+    },
+    {
+      "Order_ID": "ORD-20260625-C0005",
+      "Supplier_ID": "SUP-014",
+      "Risk_Probability": 0.9487,
+      "Risk_Level": "CRITICAL",
+      "Order_Priority": "Medium",
+      "Fabric_Body": 2222,
+      "Fabric_Trim": 442,
+      "Fabric_Rib": 446,
+      "Fabric_CollarCuff": 498,
+      "Sewing_Trims": 2225,
+      "Packing_Trims": 1256,
+      "Interlining": 312,
+      "Threads": 2106,
+      "Color_Sets_Count": 10,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Outsource",
+      "Unit_Count": 9453,
+      "Order_Value_USD": 56718,
+      "Delay_Penalty_USD_Per_Day": 567.18,
+      "Shipping_Cost_USD": 1500,
+      "remediation_advice": "\u26a0\ufe0f RECOMMENDED MITIGATION: Upgrade logistics carrier from Gemadept to DHL Express (+4 days buffer). OR Shift fabric fabrication to our Internal Mill to gain direct scheduling priority. OR Source shortage of Sewing_Trims from B2B partner 'Prestige Button & Trim' (Lead: 4d, Delay: 0.3%)."
+    },
+    {
+      "Order_ID": "ORD-20260625-C0013",
+      "Supplier_ID": "SUP-009",
+      "Risk_Probability": 0.0079,
+      "Risk_Level": "LOW",
+      "Order_Priority": "Medium",
+      "Fabric_Body": 598,
+      "Fabric_Trim": 473,
+      "Fabric_Rib": 621,
+      "Fabric_CollarCuff": 481,
+      "Sewing_Trims": 2703,
+      "Packing_Trims": 673,
+      "Interlining": 245,
+      "Threads": 5289,
+      "Color_Sets_Count": 6,
+      "Forwarder": "DHL",
+      "Mill_Source": "Internal",
+      "Unit_Count": 12697,
+      "Order_Value_USD": 139667,
+      "Delay_Penalty_USD_Per_Day": 1396.67,
+      "Shipping_Cost_USD": 1500,
+      "remediation_advice": "\u2714\ufe0f RISK MITIGATED: Switched fabric sourcing to Internal Mill. Delivery risk successfully lowered to 0.8% (LOW).",
+      "mitigated": true,
+      "mitigation_action": "Switched fabric sourcing to Internal Mill"
+    },
+    {
+      "Order_ID": "ORD-20260625-C0019",
+      "Supplier_ID": "SUP-010",
+      "Risk_Probability": 0.8161,
+      "Risk_Level": "HIGH",
+      "Order_Priority": "Medium",
+      "Fabric_Body": 4615,
+      "Fabric_Trim": 50,
+      "Fabric_Rib": 559,
+      "Fabric_CollarCuff": 670,
+      "Sewing_Trims": 2332,
+      "Packing_Trims": 1687,
+      "Interlining": 489,
+      "Threads": 1272,
+      "Color_Sets_Count": 10,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Outsource",
+      "Unit_Count": 14555,
+      "Order_Value_USD": 130995,
+      "Delay_Penalty_USD_Per_Day": 1309.95,
+      "Shipping_Cost_USD": 1500,
+      "remediation_advice": "\u26a0\ufe0f RECOMMENDED MITIGATION: Upgrade logistics carrier from Gemadept to DHL Express (+4 days buffer). OR Shift fabric fabrication to our Internal Mill to gain direct scheduling priority. OR Source shortage of Sewing_Trims from B2B partner 'Prestige Button & Trim' (Lead: 4d, Delay: 0.3%)."
+    }
+  ],
+  "reasoning_log": "Pipeline executed using local ML fallback. Balancing choice: SMOTE. XGBoost model trained successfully. Gemini reasoning was skipped due to API failure: No working Gemini model discovered from fallback list."
+}

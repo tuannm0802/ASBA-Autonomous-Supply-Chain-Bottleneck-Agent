@@ -1,0 +1,11 @@
+Supplier_ID,Supplier_Name,Material_Specialty,Lead_Time_Days,Historical_Delay_Rate,Internal_Mill,Outsource_Mill
+ALT-SUP-101,Apex Fabrics Ltd,Fabric_Body,8,0.012,1,0
+ALT-SUP-102,Zenith Knitting Co,Fabric_Body,10,0.015,0,1
+ALT-SUP-103,Vibrant Ribbing Mill,Fabric_Rib,5,0.005,1,0
+ALT-SUP-104,Elite Trim Suppliers,Fabric_Trim,6,0.008,1,0
+ALT-SUP-105,Apex Collar & Cuff,Fabric_CollarCuff,7,0.011,1,0
+ALT-SUP-106,Prestige Button & Trim,Sewing_Trims,4,0.003,1,0
+ALT-SUP-107,SafePack Box & Tag,Packing_Trims,4,0.002,1,0
+ALT-SUP-108,CoreThreads Textiles,Threads,5,0.006,1,0
+ALT-SUP-109,Interlining Experts,Interlining,6,0.009,1,0
+ALT-SUP-110,Summit Fabric Sourcing,Fabric_Body,12,0.018,0,1

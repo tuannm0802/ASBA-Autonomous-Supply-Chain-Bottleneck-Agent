@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  asba-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - USE_VERTEX_AI=${USE_VERTEX_AI:-false}
+      - GCP_PROJECT=${GCP_PROJECT:-adroit-gravity-500216-r4}
+    volumes:
+      - ./data:/app/data
+      - ./daily_reports:/app/daily_reports
