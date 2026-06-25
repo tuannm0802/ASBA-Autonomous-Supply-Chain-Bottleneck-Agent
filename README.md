@@ -1,14 +1,14 @@
 # ASBA: Autonomous Supply Chain Bottleneck Agent
 
-ASBA is an autonomous agentic supply chain risk analyst designed for garment manufacturing companies. By combining predictive machine learning classification (XGBoost) with generative multi-agent reasoning (Gemini), ASBA predicts late delivery risks on active orders and autonomously recommends and recalculates sourcing mitigations.
+ASBA is a supply chain risk analysis system designed for garment manufacturing companies. By combining a predictive machine learning classifier (XGBoost) with generative multi-agent reasoning (Gemini), ASBA predicts late delivery risks on active orders and recommends sourcing mitigations.
 
-This project was built for the **Kaggle AI Agents: Intensive Vibe Coding Capstone Project** with Google.
+This project was built for the Kaggle AI Agents: Intensive Vibe Coding Capstone Project with Google.
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
-ASBA leverages a **Multi-Agent Coordination System** built on Google's GenAI SDK and Model Context Protocol (MCP), coordinated programmatically via the Google Agent Development Kit (ADK).
+ASBA uses a multi-agent coordination flow built on Google's GenAI SDK and Model Context Protocol (MCP), coordinated programmatically via the Google Agent Development Kit (ADK).
 
 ```mermaid
 graph TD
@@ -26,7 +26,7 @@ graph TD
         subgraph Agents & Tools [Agents & FunctionTools]
             F1[Risk Assessment Agent] -->|Tool: Data Cleaning| T1[tools.data_cleaner]
             F1 -->|Tool: Balance Check| T2[tools.balance_checker]
-            F1 -->|Tool: Data Balancing| T3[tools.balancing SMOTE/CTGAN]
+            F1 -->|Tool: Data Balancing| T3[tools.balancing]
             F1 -->|Tool: XGBoost Classifier| T4[tools.ml_predictor]
             
             F1 -->|Predictive Risk Results| G1[Sourcing Mitigator Agent]
@@ -39,10 +39,10 @@ graph TD
         D1 <--> G1
     end
 
-    %% GCS & MCP layer
-    subgraph External & Cloud Integrations [External Integrations]
-        B1 -->|Interact| H1[FastMCP Server: mcp_server.py]
-        T6 -->|GCP Cloud Run Deployability| I1[GCS Helper: Cloud Backups]
+    %% Storage & local files
+    subgraph Storage & Local Files [Storage]
+        T6 -->|Local Storage| S1[(Local Directory daily_reports/)]
+        C1 -->|SQLite Database| S2[(Local Disk)]
     end
 
     %% Offline Intelligence fallback
@@ -53,97 +53,86 @@ graph TD
     end
 ```
 
-### 🔁 The Orchestration Workflow
-1. **Trigger:** A daily cron job or user request triggers [run_pipeline.py](file:///d:/Project%20Capstone%20Kaggle/backend/run_pipeline.py) which executes the ADK Multi-Agent Loop.
-2. **Risk Assessment Agent (Risk Analyst):** Runs data validation tools, handles severe class imbalances (minority class ~7.5% Late delivery status) using SMOTE or Conditional GAN (CTGAN) synthesis, and trains an XGBoost classifier to predict delivery status.
-3. **Sourcing Mitigator Agent (Sourcing Specialist):** Takes high-risk predictions, queries the B2B supplier directory for material shortages (e.g. Fabric, Threads, Trims), performs cost-exposure analysis, and drafts tailored remediation advice.
-4. **Vite + React Dashboard & Express API:** Displays risk metrics, distribution charts, and lists of active orders. Users can trigger predictions and click "Mitigate" to upgrade carriers, shift mills, or reassign suppliers, executing instant model re-inference to recalculate risks.
+### The Orchestration Workflow
+1. Trigger: A script or API request runs backend/run_pipeline.py, executing the ADK multi-agent loop.
+2. Risk Assessment Agent (Risk Analyst): Cleans the input data, handles class imbalance using SMOTE oversampling, and trains the XGBoost model to predict delivery status.
+3. Sourcing Mitigator Agent (Sourcing Specialist): Processes the high-risk orders, searches the supplier directory for alternative materials, analyzes cost exposures, and generates a markdown report.
+4. React Dashboard and Express API: Displays order statuses and risk charts. Users can trigger predictions or click "Mitigate" to change order logistics parameters, running model re-inference to recalculate risks.
 
 ---
 
-## 🎓 Applied Course Concepts
+## Applied Course Concepts
 
-ASBA implements **five core concepts** from the Google AI Agents course:
+ASBA implements five core concepts from the Google AI Agents course:
 
-### 1. ADK Multi-Agent Orchestration (Agent Development Kit)
-We migrated the entire multi-agent loop from manual prompting to Google's official `google-adk` framework.
-- **`Agent`**: Encapsulates system instructions and specific model parameters for both the `RiskAssessmentAgent` and `SourcingMitigatorAgent`.
-- **`FunctionTool`**: Decorates and exposes native Python utility modules (data cleaning, prediction, supplier search) as agent tools.
-- **`Runner`**: Executes agent invocation flows programmatically, handling the sequential handover of state from the Analyst to the Mitigator.
+### 1. ADK Multi-Agent Orchestration
+The multi-agent loop is built on Google's official Agent Development Kit (ADK):
+* Agent: Encapsulates instructions and parameters for both the RiskAssessmentAgent and SourcingMitigatorAgent.
+* FunctionTool: Exposes native Python functions (cleaning, predicting, supplier search) as agent tools.
+* Runner: Coordinates the sequential handover of state from the Analyst agent to the Mitigator agent.
 
-### 2. Session Memory & Retention
-To ensure smooth conversational interfaces, ASBA leverages ADK's `InMemorySessionService`.
-- Chat contexts are tracked using a unique `session_id`.
-- Conversational history is modeled as ADK `Event` logs and fed back to the Sourcing Specialist model on each turn.
-- This allows the Sourcing Specialist to remember previously mitigated orders, answer follow-up questions, and compare multiple sourcing alternatives contextually.
+### 2. Session Memory
+ASBA uses ADK's InMemorySessionService to track chat conversation history.
+* Chat contexts are tracked using a unique session ID.
+* Conversations are modeled as ADK Event logs and passed back to the Sourcing Specialist on subsequent turns.
+* This allows the agent to answer follow-up questions, compare sourcing alternatives, and retain context.
 
-### 3. FastMCP Server Integration
-ASBA exposes its core supply chain tools via a **Model Context Protocol (MCP)** server built with python's `mcp` library:
-- Exposes tools like `search_supplier_directory` and `train_and_predict_risk` to external LLM clients.
-- Enables agent tool sharing, allowing third-party tools (like Cursor, Claude Desktop, or custom MCP gateways) to inspect and run supply chain mitigations natively.
+### 3. Model Context Protocol (MCP) Server
+ASBA exposes its supply chain tools via an MCP server built with the Python mcp library:
+* Exposes tools like search_supplier_directory and train_and_predict_risk.
+* Allows any MCP-compliant client (like Cursor or Claude Desktop) to connect and run predictions.
 
-### 4. Double-Layer Input Regex Sanitization
-To safeguard database writes and prevent prompt injection, ASBA implements a strict input validation policy:
-- **Express Layer**: Validates API request parameters using Express middleware before passing arguments to child processes.
-- **Python ML/Agent Layer**: Re-sanitizes inputs using strict compiled regular expressions (e.g., matching `ORD-\d{8}-[A-Z0-9]+` patterns for Order IDs and alphanumeric strings for Supplier IDs) before querying the SQLite database or passing data to XGBoost model inference.
+### 4. Input Regex Security Sanitization
+ASBA validates input arguments at two layers:
+* Express API: Validates parameters using custom middleware regexes before spawning backend scripts.
+* Python Tools: Uses compiled regex patterns to sanitize Order IDs and alphanumeric strings before querying SQLite or performing XGBoost model predictions.
 
-### 5. GCP Cloud Run & Cloud Storage Deployability
-ASBA is fully optimized for cloud execution:
-- **Multi-Stage Dockerfile**: Builds the React static assets, copies the node and Python runtime environment, installs packages, and boots the backend server.
-- **Keyless Vertex AI Integration**: Uses Google Application Default Credentials (ADC) to authenticate against Vertex AI API securely without hardcoded keys.
-- **GCS Backup Helpers**: Integrates with Google Cloud Storage (`tools/gcs_helper.py`) to sync daily JSON reports and the SQLite database to a cloud bucket, maintaining persistent state across serverless container restarts.
-
----
-
-## 📴 Offline Intelligence Mode (Local Fallback)
-
-To prevent downtime during Gemini API outages or rate limit (`RESOURCE_EXHAUSTED` 429) exhaustion:
-- The system catches LLM connection errors and automatically switches to **Offline Intelligence Mode**.
-- **Local Predictive Inference**: Runs local Python machine learning predictions using the pre-trained XGBoost model (`xgb_model.json`).
-- **Deterministic Rules Lookup**: Scans the SQLite B2B supplier directory and applies a hardcoded rules engine to recommend the lowest-risk supplier matching the required fabric/thread bottleneck.
-- **Seamless UI integration**: The frontend dashboard displays warnings that the agent is in offline mode while keeping 100% of the prediction, mitigation, and chart-rendering features fully operational.
+### 5. Production GCP Configs & Local Hosting
+* Google Cloud Run Configs: A Dockerfile and deploy_gcp.sh script are provided for building and deploying the container to GCP.
+* Local Sourcing: Due to active GCP billing account requirements, we host and run the application locally for evaluation and recording.
+* Local Fallback: If Gemini API limits or quotas are hit, the system automatically falls back to local XGBoost inference and deterministic supplier directory lookups to keep the application running.
 
 ---
 
-## 📂 Directory Structure
+## Directory Structure
 
-Here is an overview of the reorganized project layout:
+Here is an overview of the project layout:
 
 ```text
 d:/Project Capstone Kaggle
 ├── agent/                       # ADK Multi-Agent definition and loop
 │   ├── __init__.py
-│   ├── react_loop.py            # Primary ADK agent runner & model discovery
-│   └── tool_definitions.py      # Combines tools for Analyst and Mitigator
+│   ├── react_loop.py            # Primary ADK agent runner
+│   └── tool_definitions.py      # Registers tools for Analyst and Mitigator
 ├── backend/                     # Node.js API server & Python entrypoints
-│   ├── chat_agent.py            # Chat interface wrapper using ADK Session
-│   ├── mitigate_order.py        # Updates database & re-runs model prediction
-│   ├── run_pipeline.py          # Script execution for the daily risk pipeline
-│   ├── server.js                # Express API server serving frontend static files
+│   ├── chat_agent.py            # Chat wrapper using ADK Session
+│   ├── mitigate_order.py        # Updates database & re-runs predictions
+│   ├── run_pipeline.py          # Daily risk pipeline script
+│   ├── server.js                # Express API server
 │   ├── package.json
 │   └── package-lock.json
-├── daily_reports/               # CONSOLIDATED: Reports generated by the pipeline
+├── daily_reports/               # Reports generated by the pipeline
 │   ├── report_YYYYMMDD.json     # JSON payload for dashboard history
 │   └── report_YYYYMMDD.md       # Markdown summary written by Sourcing Agent
-├── data/                        # Active supply chain datasets & models
-│   ├── supply_chain.db          # SQLite database storing raw, clean, predictions
+├── data/                        # Active datasets and models
+│   ├── supply_chain.db          # SQLite database
 │   ├── ml_metadata.pkl          # ML preprocessor metadata
-│   ├── xgb_model.json           # Pre-trained XGBoost classifier model
-│   └── *.csv                    # Synthetic CSVs (historical, directory, current)
+│   ├── xgb_model.json           # Trained XGBoost model
+│   └── *.csv                    # Synthetic CSV files
 ├── frontend/                    # Vite + React Client application
 │   ├── src/                     # App.jsx, index.css, main.jsx
-│   ├── dist/                    # Compiled production UI static assets
+│   ├── dist/                    # Compiled production static assets
 │   ├── package.json
 │   └── vite.config.js
 ├── tools/                       # Core python tools consumed by ADK
 │   ├── balance_checker.py       # Scans class imbalance ratio
-│   ├── balancing.py             # Oversampling using SMOTE/CTGAN
+│   ├── balancing.py             # Oversampling using SMOTE
 │   ├── data_cleaner.py          # Deduplicates, imputes, and caps outliers
-│   ├── database.py              # SQLite context manager and initialization
+│   ├── database.py              # SQLite database manager
 │   ├── directory_lookup.py      # B2B Supplier Directory queries
-│   ├── gcs_helper.py            # Syncs reports/database with GCS bucket
-│   ├── ml_predictor.py          # Trains XGBoost and outputs prediction probabilities
-│   └── report_writer.py         # Saves Sourcing specialist's markdown reports
+│   ├── gcs_helper.py            # Backup utilities for GCS bucket
+│   ├── ml_predictor.py          # XGBoost training and prediction
+│   └── report_writer.py         # Saves markdown reports
 ├── .env.example
 ├── Dockerfile                   # Multi-stage production deployment configuration
 ├── docker-compose.yml           # Local container runner
@@ -155,12 +144,12 @@ d:/Project Capstone Kaggle
 
 ---
 
-## 🛠️ Local Setup & Quickstart
+## Local Setup & Quickstart
 
 ### Prerequisites
 - Python 3.10 or 3.11
 - Node.js 18 or 20
-- Google AI Studio API key (`GOOGLE_API_KEY`)
+- Google AI Studio API key (GOOGLE_API_KEY)
 
 ### 1. Clone & Install Dependencies
 ```bash
@@ -185,13 +174,13 @@ GOOGLE_API_KEY=AIzaSy... # Your Gemini API Key
 USE_VERTEX_AI=false
 ```
 
-Also, create or copy `.env` into the `backend/` directory:
+Also, copy this `.env` into the `backend/` directory:
 ```bash
 cp .env backend/.env
 ```
 
 ### 3. Running the Agent CLI
-ASBA provides a fully interactive Command Line Interface.
+ASBA provides an interactive Command Line Interface:
 ```bash
 # Run the daily risk assessment pipeline (generates markdown report)
 python main.py --assess
@@ -217,9 +206,9 @@ npm run dev
 
 ---
 
-## 🌐 Google Cloud Run Deployment
+## Google Cloud Run Deployment
 
-ASBA is fully containerized and configured for serverless deployment on Google Cloud Run.
+ASBA is configured for serverless deployment on Google Cloud Run, though we host it locally due to GCP billing restrictions. 
 
 ### 1. Authenticate with Google Cloud
 Ensure you have the Google Cloud CLI installed, then login and set your project:
@@ -234,13 +223,12 @@ Execute the deployment script to provision services, compile the container, depl
 chmod +x deploy_gcp.sh
 ./deploy_gcp.sh
 ```
-Upon completion, the script will output your public secure dashboard URL (e.g. `https://asba-service-xxxx-uc.a.run.app`).
 
 ---
 
-## 🔌 Running the Python MCP Server
+## Running the Python MCP Server
 
-ASBA exposes its tools via a **Model Context Protocol (MCP)** server, allowing external AI clients (like Claude Desktop or Cursor) to call our supply chain risk assessment features natively.
+ASBA exposes its tools via a Model Context Protocol (MCP) server, allowing external AI clients (like Claude Desktop or Cursor) to call our supply chain risk assessment features natively.
 
 To run the MCP server:
 ```bash
