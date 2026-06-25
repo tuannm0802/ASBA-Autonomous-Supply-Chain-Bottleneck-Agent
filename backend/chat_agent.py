@@ -129,28 +129,28 @@ def run_chat_turn(message: str, history: list) -> dict:
             try:
                 alts = json.loads(search_supplier_directory("Fabric_Body"))
                 suppliers = alts.get("suppliers", [])
-                formatted_alts = "\n".join([f"- **{a['Supplier_Name']}** ({a['Supplier_ID']}): delay rate {float(a['Historical_Delay_Rate']) * 100:.1f}%, lead time {a['Lead_Time_Days']} days" for a in suppliers])
-                response_text = f"Gemini is offline, but my local rules fallback scanned the B2B Directory for **Fabric** alternatives:\n\n{formatted_alts}\n\nI recommend switching to a partner with an internal mill."
+                formatted_alts = "\n".join([f"- {a['Supplier_Name']} ({a['Supplier_ID']}): delay rate {float(a['Historical_Delay_Rate']) * 100:.1f}%, lead time {a['Lead_Time_Days']} days" for a in suppliers])
+                response_text = f"Gemini is out of quota, but my local rules fallback scanned the B2B Directory for Fabric alternatives:\n\n{formatted_alts}\n\nI recommend switching to a partner with an internal mill."
             except Exception:
                 response_text = "I recommend checking Apex Fabrics Ltd (ALT-SUP-101) as a B2B partner for fabric body shortages."
         elif "threads" in lower_msg or "thread" in lower_msg:
             try:
                 alts = json.loads(search_supplier_directory("Threads"))
                 suppliers = alts.get("suppliers", [])
-                formatted_alts = "\n".join([f"- **{a['Supplier_Name']}** ({a['Supplier_ID']}): delay rate {float(a['Historical_Delay_Rate']) * 100:.1f}%, lead time {a['Lead_Time_Days']} days" for a in suppliers])
-                response_text = f"Gemini is offline, but my local rules fallback scanned the B2B Directory for **Threads** alternatives:\n\n{formatted_alts}"
+                formatted_alts = "\n".join([f"- {a['Supplier_Name']} ({a['Supplier_ID']}): delay rate {float(a['Historical_Delay_Rate']) * 100:.1f}%, lead time {a['Lead_Time_Days']} days" for a in suppliers])
+                response_text = f"Gemini is out of quota, but my local rules fallback scanned the B2B Directory for Threads alternatives:\n\n{formatted_alts}"
             except Exception:
                 response_text = "I recommend CoreThreads Textiles (ALT-SUP-108) as a B2B partner for threads shortages."
         elif "trim" in lower_msg or "trims" in lower_msg:
             try:
                 alts = json.loads(search_supplier_directory("Sewing_Trims"))
                 suppliers = alts.get("suppliers", [])
-                formatted_alts = "\n".join([f"- **{a['Supplier_Name']}** ({a['Supplier_ID']}): delay rate {float(a['Historical_Delay_Rate']) * 100:.1f}%, lead time {a['Lead_Time_Days']} days" for a in suppliers])
-                response_text = f"Gemini is offline, but my local rules fallback scanned the B2B Directory for **Sewing Trims** alternatives:\n\n{formatted_alts}"
+                formatted_alts = "\n".join([f"- {a['Supplier_Name']} ({a['Supplier_ID']}): delay rate {float(a['Historical_Delay_Rate']) * 100:.1f}%, lead time {a['Lead_Time_Days']} days" for a in suppliers])
+                response_text = f"Gemini is out of quota, but my local rules fallback scanned the B2B Directory for Sewing Trims alternatives:\n\n{formatted_alts}"
             except Exception:
                 response_text = "I recommend checking ALT-SUP-105 for packing and sewing trim bottlenecks."
         else:
-            response_text = "Hello! I am your Sourcing Mitigation Specialist. Gemini is currently unavailable, but I can help you query material shortages. Try asking me about 'fabric alternative suppliers' or 'threads'."
+            response_text = "Hello! I am your Sourcing Mitigation Specialist. Gemini is out of quota, but I can help you query material shortages. Try asking me about 'fabric alternative suppliers' or 'threads'."
             
         return {
             "status": "partial_success",
