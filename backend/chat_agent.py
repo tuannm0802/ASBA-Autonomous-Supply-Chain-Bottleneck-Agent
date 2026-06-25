@@ -69,7 +69,7 @@ def run_chat_turn(message: str, history: list) -> dict:
         for h in history:
             role = h.get("role", "user")
             text = h.get("text", "")
-            if role == "assistant":
+            if role in ["assistant", "model"]:
                 role = "model"
                 author = "SourcingMitigatorAgent"
             else:
