@@ -23,41 +23,13 @@ Note on Hosting: Due to billing account requirements on Google Cloud Platform, w
 
 ASBA is structured as a fullstack application utilizing a React (Vite) frontend, an Express.js (Node.js) API layer, and Python for the machine learning and ADK orchestration pipelines.
 
-```mermaid
-graph TD
-    %% Frontend/Backend API Structure
-    subgraph UI & API Layer [Dashboard & Express API Layer]
-        A1[React Frontend Dashboard] <-->|HTTP Predict / Chat / Mitigate| B1[Express.js Server]
-        B1 <-->|Read/Write Predictions & Mitigations| C1[(SQLite DB: supply_chain.db)]
-    end
-
-    %% ADK Multi-Agent runner loop
-    subgraph ADK Agent Loop [ADK Multi-Agent Orchestration Layer]
-        B1 -->|Spawn run_pipeline.py| D1[ADK Runner]
-        D1 -->|Initialize with Session Memory| E1[InMemorySessionService]
-
-        subgraph Agents & Tools [Agents & FunctionTools]
-            F1[Risk Assessment Agent] -->|Tool: Data Cleaning| T1[tools.data_cleaner]
-            F1 -->|Tool: Balance Check| T2[tools.balance_checker]
-            F1 -->|Tool: Balancing Strategy| T3[tools.balancing]
-            F1 -->|Tool: Risk Prediction| T4[tools.ml_predictor]
-            
-            G1[Sourcing Mitigator Agent] -->|Tool: Directory Search| T5[tools.directory_lookup]
-            G1 -->|Tool: Report Generation| T6[tools.report_writer]
-        end
-        
-        D1 -->|Orchestrates| F1
-        F1 -->|Hands off metrics| G1
-        G1 -->|Writes report| T6
-    end
-
-    %% Storage and Fallback
-    subgraph Storage & Cloud [Storage & Offline Fallback]
-        T4 <-->|Save/Load Model| S1[(Local Disk)]
-        T6 -->|Local Storage| S2[(Local Directory daily_reports/)]
-        D1 -.->|Out of Quota Fallback| F2[Offline Intelligence Mode]
-    end
-```
+### Architecture Components
+* **User Interface**: A React frontend dashboard built with Vite, displaying live orders, interactive risk distribution charts, and a sourcing assistant chat interface.
+* **API Gateway**: An Express.js backend that handles routing, manages SQLite data queries, applies regex validation to input arguments, and spawns the Python runtime.
+* **Orchestration Runner**: A Python runner that manages the ADK multi-agent session.
+* **Risk Analyst Agent**: Cleans data using preprocessors, performs class balancing checks, and uses an XGBoost classifier to assign late-delivery probabilities.
+* **Sourcing Specialist Agent**: Triggered by predictions, it searches the B2B supplier database, calculates cost trade-offs, and writes markdown reports.
+* **Local Database**: An SQLite database (`supply_chain.db`) storing historical/active orders, model prediction flags, and alternative vendor directories.
 
 ---
 
