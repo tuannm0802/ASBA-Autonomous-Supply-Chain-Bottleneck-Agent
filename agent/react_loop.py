@@ -86,6 +86,9 @@ def _get_api_client(use_fallback=False):
     if not api_key:
         raise ValueError("API Key environment variable not set. Please check your .env file.")
 
+    # Override/Sync environment variable for internal ADK GenAI client usage
+    os.environ["GOOGLE_API_KEY"] = api_key
+
     masked_key = f"{api_key[:6]}...{api_key[-4:]}" if len(api_key) > 10 else "invalid"
     print(f"  [AUTH] Authenticating via {'secondary' if use_fallback else 'primary'} Google AI Studio API key: {masked_key}")
     return genai.Client(api_key=api_key), "ai-studio"
