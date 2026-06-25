@@ -34,13 +34,31 @@ def run_chat_turn(message: str, history: list) -> dict:
     reasoning_log = []
     
     try:
-        # Initialize Gemini Client
-        client, auth_mode = _get_api_client()
-        is_vertex = (auth_mode == "vertex-ai")
+        # Initialize Gemini Client and probe working models
+        client = None
+        auth_mode = None
+        active_model = None
         
-        active_model = _discover_working_model(client, is_vertex)
+        # Try primary key first
+        try:
+            client, auth_mode = _get_api_client(use_fallback=False)
+            is_vertex = (auth_mode == "vertex-ai")
+            active_model = _discover_working_model(client, is_vertex=is_vertex)
+        except Exception as e:
+            reasoning_log.append(f"[AUTH] Primary key setup failed: {str(e)[:100]}")
+            
+        # Try fallback key if primary failed or found no working models
         if not active_model:
-            raise ValueError("No working Gemini model discovered.")
+            reasoning_log.append("[AUTH] Primary key exhausted or failed. Attempting fallback API key...")
+            try:
+                client, auth_mode = _get_api_client(use_fallback=True)
+                is_vertex = (auth_mode == "vertex-ai")
+                active_model = _discover_working_model(client, is_vertex=is_vertex)
+            except Exception as e:
+                reasoning_log.append(f"[AUTH] Fallback key setup failed: {str(e)[:100]}")
+                
+        if not active_model:
+            raise ValueError("No working Gemini model discovered on either primary or secondary API keys.")
             
         # Build ADK Agent
         mitigator_agent = Agent(

@@ -60,12 +60,22 @@ from google.adk.tools import FunctionTool
 # Authentication and Clients
 # ──────────────────────────────────────────────────────────────
 
-def _get_api_client():
+def _get_api_client(use_fallback=False):
     """Initializes the Gemini Client. Checks .env first, then system environments."""
     env_path = Path(_project_root) / ".env"
     load_dotenv(dotenv_path=env_path)
-    api_key = os.getenv("GOOGLE_API_KEY")
     
+    if use_fallback:
+        api_key = os.getenv("GOOGLE_API_KEY_FALLBACK")
+        if not api_key:
+            api_key = os.environ.get("GOOGLE_API_KEY_FALLBACK")
+        if not api_key:
+            raise ValueError("GOOGLE_API_KEY_FALLBACK environment variable not set. Please check your .env file.")
+    else:
+        api_key = os.getenv("GOOGLE_API_KEY")
+        if not api_key:
+            api_key = os.environ.get("GOOGLE_API_KEY")
+            
     use_vertex = os.getenv("USE_VERTEX_AI", "false").lower() == "true"
     project_id = os.getenv("GCP_PROJECT")
     
@@ -74,13 +84,10 @@ def _get_api_client():
         return genai.Client(vertexai=True, project=project_id, location="us-central1"), "vertex-ai"
         
     if not api_key:
-        api_key = os.environ.get("GOOGLE_API_KEY")
-
-    if not api_key:
-        raise ValueError("GOOGLE_API_KEY environment variable not set. Please check your .env file.")
+        raise ValueError("API Key environment variable not set. Please check your .env file.")
 
     masked_key = f"{api_key[:6]}...{api_key[-4:]}" if len(api_key) > 10 else "invalid"
-    print(f"  [AUTH] Authenticating via Google AI Studio API key: {masked_key}")
+    print(f"  [AUTH] Authenticating via {'secondary' if use_fallback else 'primary'} Google AI Studio API key: {masked_key}")
     return genai.Client(api_key=api_key), "ai-studio"
 
 
@@ -315,12 +322,30 @@ def run_agent_loop(is_web: bool = False, max_iterations: int = 15):
 
     try:
         # Initialize Gemini Client and probe working models
-        client, auth_mode = _get_api_client()
-        is_vertex = (auth_mode == "vertex-ai")
-
-        active_model = _discover_working_model(client, is_vertex=is_vertex)
+        client = None
+        auth_mode = None
+        active_model = None
+        
+        # Try primary key first
+        try:
+            client, auth_mode = _get_api_client(use_fallback=False)
+            is_vertex = (auth_mode == "vertex-ai")
+            active_model = _discover_working_model(client, is_vertex=is_vertex)
+        except Exception as e:
+            print(f"  [AUTH] Primary key setup failed: {e}")
+            
+        # Try fallback key if primary failed or found no working models
         if not active_model:
-            raise ValueError("No working Gemini model discovered from fallback list.")
+            print("  [AUTH] Primary key exhausted or failed. Attempting fallback API key...")
+            try:
+                client, auth_mode = _get_api_client(use_fallback=True)
+                is_vertex = (auth_mode == "vertex-ai")
+                active_model = _discover_working_model(client, is_vertex=is_vertex)
+            except Exception as e:
+                print(f"  [AUTH] Fallback key setup failed: {e}")
+                
+        if not active_model:
+            raise ValueError("No working Gemini model discovered from fallback list on either primary or secondary keys.")
 
         print(f"  [MODEL] Active ADK model: {active_model}")
 

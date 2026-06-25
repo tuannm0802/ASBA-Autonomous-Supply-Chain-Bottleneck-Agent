@@ -55,7 +55,7 @@ We enforce strict input validation layers to protect the database and ML pipelin
 
 ### 5. Production GCP Configs & Local Fallback
 * GCP Scripts: We provided a Dockerfile and deploy_gcp.sh to build the container using Cloud Build and deploy to Cloud Run. However, due to active GCP billing restrictions, we run the app locally.
-* Offline Fallback: If Gemini API limits or quotas are hit, the system automatically falls back to local XGBoost inference and deterministic supplier lookup heuristics, ensuring the UI remains functional.
+* Offline Fallback: If Gemini API limits or quotas are hit (429 Resource Exhausted), the system automatically attempts to rotate authentication to a secondary fallback API key. If both keys are exhausted or offline, the runner automatically switches to the offline rules engine (local XGBoost inference and deterministic supplier directory lookups) to keep the app functional.
 
 ---
 
