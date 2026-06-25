@@ -18,7 +18,10 @@ set -e # Exit immediately if a command exits with a non-zero status
 # ──────────────────────────────────────────────────────────────
 # 1. Configuration
 # ──────────────────────────────────────────────────────────────
-PROJECT_ID="adroit-gravity-500216-r4"
+# Retrieve the currently active gcloud project ID, or accept it as the first argument
+ACTIVE_PROJECT=$(gcloud config get-value project 2>/dev/null)
+PROJECT_ID="${1:-${ACTIVE_PROJECT:-"adroit-gravity-500216-r4"}}"
+
 REGION="us-central1"
 REPO_NAME="asba-repo"
 SERVICE_NAME="asba-service"
