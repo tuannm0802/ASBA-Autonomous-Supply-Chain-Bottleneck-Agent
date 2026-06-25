@@ -75,5 +75,7 @@ Mitigation Result: When shifting a critical order's fabric manufacturing to our 
 
 ## Submission Links
 * GitHub Repository: [tuannm0802/Kaggle-Capstone-Project-](https://github.com/tuannm0802/Kaggle-Capstone-Project-)
+* Project Logo: [asba_logo.png](https://github.com/tuannm0802/Kaggle-Capstone-Project-/raw/main/frontend/public/asba_logo.png)
+* Project Thumbnail Banner: [asba_thumbnail.png](https://github.com/tuannm0802/Kaggle-Capstone-Project-/raw/main/frontend/public/asba_thumbnail.png)
 * Video Demonstration: [YouTube Link Placeholder]
 * Deployment Note: Locally hosted due to GCP billing restrictions. The full local quickstart is detailed in the repository's README file.

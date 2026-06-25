@@ -545,8 +545,8 @@ export default function App() {
       <header className="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="bg-brand-500/10 border border-brand-500/30 p-2 rounded-xl text-brand-400 shadow-glow animate-pulse-slow">
-              <Scissors className="w-6 h-6" />
+            <div className="bg-slate-900 border border-slate-850 p-1.5 rounded-xl shadow-glow flex items-center justify-center w-11 h-11">
+              <img src="/asba_logo.png" alt="ASBA Logo" className="w-8 h-8 object-contain" />
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-tight text-white font-outfit">ASBA Dashboard</h1>
