@@ -1,0 +1,129 @@
+{
+  "date": "2026-06-25",
+  "data_integrity": {
+    "total_rows": 2000,
+    "missing_values": 0,
+    "class_distribution_before": {
+      "On-Time": 1850,
+      "Late": 150
+    },
+    "class_distribution_after": {
+      "On-Time": 1850,
+      "Late": 1850
+    }
+  },
+  "metrics": {
+    "algorithm": "XGBoost (XGBClassifier)",
+    "accuracy": 0.9605,
+    "f1_score": 0.7304,
+    "auc_roc": 0.9831,
+    "balancing_method": "SMOTE"
+  },
+  "charts": {
+    "risk_distribution": [
+      {
+        "name": "Low Risk",
+        "value": 44
+      },
+      {
+        "name": "Medium Risk",
+        "value": 2
+      },
+      {
+        "name": "High Risk",
+        "value": 4
+      }
+    ],
+    "bottleneck_by_forwarder": [
+      {
+        "forwarder": "DHL",
+        "high_risk_count": 0,
+        "avg_risk": 0.05
+      },
+      {
+        "forwarder": "ONE",
+        "high_risk_count": 0,
+        "avg_risk": 0.03
+      },
+      {
+        "forwarder": "Wanhai",
+        "high_risk_count": 0,
+        "avg_risk": 0.07
+      },
+      {
+        "forwarder": "Gemadept",
+        "high_risk_count": 4,
+        "avg_risk": 0.898
+      }
+    ],
+    "bottleneck_by_material": [
+      {
+        "material": "Fabric_Body",
+        "correlation": 0.0297
+      },
+      {
+        "material": "Threads",
+        "correlation": 0.0259
+      },
+      {
+        "material": "Sewing_Trims",
+        "correlation": 0.015
+      }
+    ]
+  },
+  "high_risk_orders": [
+    {
+      "Order_ID": "ORD-20260625-C0012",
+      "Supplier_ID": "SUP-002",
+      "Risk_Probability": 0.9638,
+      "Risk_Level": "CRITICAL",
+      "Order_Priority": "High",
+      "Fabric_Body": 1645,
+      "Threads": 746,
+      "Color_Sets_Count": 8,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Outsource",
+      "remediation_advice": "Upgrade carrier to DHL Express to bypass Gemadept port bottlenecks. Re-assign Fabric_Body sourcing to ALT-SUP-101 (Apex Fabrics Ltd) due to lower lead time and delay rate with an internal mill. Re-assign Threads sourcing to ALT-SUP-108 (CoreThreads Textiles) for improved lead time and delay rate."
+    },
+    {
+      "Order_ID": "ORD-20260625-C0005",
+      "Supplier_ID": "SUP-014",
+      "Risk_Probability": 0.9487,
+      "Risk_Level": "CRITICAL",
+      "Order_Priority": "Medium",
+      "Fabric_Body": 2222,
+      "Threads": 2106,
+      "Color_Sets_Count": 10,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Outsource",
+      "remediation_advice": "Upgrade carrier to DHL Express to bypass Gemadept port bottlenecks. Re-assign Fabric_Body sourcing to ALT-SUP-101 (Apex Fabrics Ltd). Re-assign Threads sourcing to ALT-SUP-108 (CoreThreads Textiles)."
+    },
+    {
+      "Order_ID": "ORD-20260625-C0013",
+      "Supplier_ID": "SUP-009",
+      "Risk_Probability": 0.864,
+      "Risk_Level": "HIGH",
+      "Order_Priority": "Medium",
+      "Fabric_Body": 598,
+      "Threads": 5289,
+      "Color_Sets_Count": 6,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Both",
+      "remediation_advice": "Upgrade carrier to DHL Express to bypass Gemadept port bottlenecks. Re-assign Fabric_Body sourcing to ALT-SUP-101 (Apex Fabrics Ltd). Re-assign Threads sourcing to ALT-SUP-108 (CoreThreads Textiles)."
+    },
+    {
+      "Order_ID": "ORD-20260625-C0019",
+      "Supplier_ID": "SUP-010",
+      "Risk_Probability": 0.8161,
+      "Risk_Level": "HIGH",
+      "Order_Priority": "Medium",
+      "Fabric_Body": 4615,
+      "Threads": 1272,
+      "Color_Sets_Count": 10,
+      "Forwarder": "Gemadept",
+      "Mill_Source": "Outsource",
+      "remediation_advice": "Upgrade carrier to DHL Express to bypass Gemadept port bottlenecks. Re-assign Fabric_Body sourcing to ALT-SUP-101 (Apex Fabrics Ltd). Re-assign Threads sourcing to ALT-SUP-108 (CoreThreads Textiles)."
+    }
+  ],
+  "reasoning_log": "SMOTE was chosen as the balancing method to address potential class imbalance in the training data, a common issue in risk prediction models. The primary sourcing constraints identified are the consistent use of 'Gemadept' as a forwarder for high-risk orders, indicating potential logistical bottlenecks. Additionally, reliance on 'Outsource' mill sources is a significant risk factor. 'Fabric_Body' and 'Threads' were identified as key material bottlenecks based on their feature importance in the predictive model."
+}

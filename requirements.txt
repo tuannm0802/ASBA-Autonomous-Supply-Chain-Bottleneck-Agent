@@ -9,3 +9,4 @@ python-dotenv>=1.0
 mcp>=1.0.0
 google-cloud-storage>=2.0.0
 gcsfs>=2023.1.0
+google-adk>=0.1.0

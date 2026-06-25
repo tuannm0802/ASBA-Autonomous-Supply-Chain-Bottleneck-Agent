@@ -416,14 +416,14 @@ export default function App() {
     let featureImportance = [];
     if (data.charts?.bottleneck_by_material) {
       featureImportance = data.charts.bottleneck_by_material.map(m => ({
-        name: m.material.replace('Fabric_', '').replace('_Count', '').replace('Fwd_', '').replace('_USD', '').replace('Outsource_', 'Outsourced ').replace('Internal_', 'Internal '),
-        value: m.correlation
+        material: m.material.replace('Fabric_', '').replace('_Count', '').replace('Fwd_', '').replace('_USD', '').replace('Outsource_', 'Outsourced ').replace('Internal_', 'Internal '),
+        correlation: m.correlation
       }));
     } else {
       const features = data.top_risk_features || {};
       featureImportance = Object.keys(features).map(k => ({
-        name: k.replace('Fabric_', '').replace('_Count', '').replace('Fwd_', ''),
-        value: features[k]
+        material: k.replace('Fabric_', '').replace('_Count', '').replace('Fwd_', ''),
+        correlation: features[k]
       }));
     }
 
@@ -634,7 +634,7 @@ export default function App() {
                 ) : (
                   history.map((run, idx) => (
                     <option key={idx} value={idx}>
-                      {run.date.slice(0,4)}-{run.date.slice(4,6)}-{run.date.slice(6,8)} ({run.balancing_method})
+                      {run.date.includes('-') ? run.date : `${run.date.slice(0,4)}-${run.date.slice(4,6)}-${run.date.slice(6,8)}`} ({run.balancing_method})
                     </option>
                   ))
                 )}
@@ -925,17 +925,17 @@ export default function App() {
                     {/* Chart 2: Top Feature Importance */}
                     <div className="glass-panel p-5 rounded-2xl flex flex-col h-[320px]">
                       <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">2. Top Risk Factor Importances (XGBoost)</h4>
-                      <div className="flex-grow">
+                      <div className="h-[240px] w-full relative">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={analyticsData?.featureImportance || []} layout="vertical" margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                             <XAxis type="number" stroke="#94a3b8" fontSize={9} />
-                            <YAxis dataKey="name" type="category" stroke="#94a3b8" fontSize={9} width={90} />
+                            <YAxis dataKey="material" type="category" stroke="#94a3b8" fontSize={9} width={90} />
                             <Tooltip
                               contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
                               itemStyle={{ color: '#fff' }}
                             />
-                            <Bar dataKey="value" name="Importance Score" fill="#10b981" radius={[0, 4, 4, 0]} />
+                            <Bar dataKey="correlation" name="Importance Score" fill="#10b981" radius={[0, 4, 4, 0]} />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>

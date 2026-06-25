@@ -386,6 +386,7 @@ def run_agent_loop(is_web: bool = False, max_iterations: int = 15):
 
         analyst_text = ""
         last_tool_res = None
+        prediction_tool_res = None
 
         for event in events1:
             if event.content and event.content.parts:
@@ -402,12 +403,14 @@ def run_agent_loop(is_web: bool = False, max_iterations: int = 15):
                             "tool": part.function_response.name,
                             "result": res_val
                         }
+                        if part.function_response.name == "train_and_predict_risk":
+                            prediction_tool_res = last_tool_res
 
-        if not last_tool_res or last_tool_res["tool"] != "train_and_predict_risk":
+        if not prediction_tool_res:
             raise RuntimeError("Risk analyst agent completed without successfully running predictions tool.")
 
         # Load prediction results
-        ml_results = json.loads(last_tool_res["result"])
+        ml_results = json.loads(prediction_tool_res["result"])
         if ml_results.get("status") != "success":
             raise RuntimeError(f"ML predictor tool returned failure: {ml_results.get('message')}")
 
