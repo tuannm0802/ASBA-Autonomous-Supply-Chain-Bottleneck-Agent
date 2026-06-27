@@ -17,6 +17,8 @@ ASBA integrates machine learning (XGBoost) with Google Gemini 2.5 (via the Googl
 
 Note on Hosting: Due to billing account requirements on Google Cloud Platform, we are hosting and running the application locally for execution and recording. The full deploy_gcp.sh scripts and configs remain in the repository for references.
 
+Development Workflow: The entire system (including code auditing, database schema design, ML models, and ADK loops) was pair-programmed and optimized in collaboration with Google's Antigravity agentic AI coding assistant.
+
 ---
 
 ## System Architecture

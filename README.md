@@ -2,7 +2,7 @@
 
 ASBA is a supply chain risk analysis system designed for garment manufacturing companies. By combining a predictive machine learning classifier (XGBoost) with generative multi-agent reasoning (Gemini), ASBA predicts late delivery risks on active orders and recommends sourcing mitigations.
 
-This project was built for the Kaggle AI Agents: Intensive Vibe Coding Capstone Project with Google.
+This project was built for the Kaggle AI Agents: Intensive Vibe Coding Capstone Project with Google, and was pair-programmed and audited using Google's Antigravity AI coding assistant.
 
 ---
 
