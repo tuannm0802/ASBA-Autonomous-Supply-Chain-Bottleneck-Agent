@@ -20,3 +20,9 @@ task-*.log
 
 # SQLite Databases (optional, but usually ignored in production)
 # data/supply_chain.db
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
